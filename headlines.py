@@ -16,11 +16,11 @@ RSS_FEEDS = {
 def get_news():
     query = request.args.get('publication')
     if not query or query.lower() not in RSS_FEEDS:
-        publication = 'bbc'
+        publication = 'fox'
     else:
         publication = query.lower()
     feed = feedparser.parse(RSS_FEEDS[publication])
     return render_template('home.html', articles=feed['entries'])
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    app.run(port=8001, debug=True)
