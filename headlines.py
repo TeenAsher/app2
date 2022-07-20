@@ -17,8 +17,12 @@ RSS_FEEDS = {
 
 DEFAULTS = {
     'publication': 'cnn',
-    'city': 'Saint-Petersburg'
+    'city': 'Saint-Petersburg',
+    'currency_from': 'USD',
+    'currency_to': 'RUB'
 }
+
+CURRENCY_URL = 'https://openexchangerates.org//api/latest.json?app_id=0b0c3a8e4e4243d48c89316d6cba8c84'
 
 @app.route('/')
 def home():
@@ -30,7 +34,16 @@ def home():
     if not city:
         city = DEFAULTS['city']
     weather = get_weather(city)
-    return render_template('home.html', articles=articles, weather=weather)
+    currency_from = flask.request.args.get('currency_from')
+    if not currency_from:
+        currency_from = DEFAULTS['currency_from']
+    currency_to = flask.request.args.get('currency_to')
+    if not currency_to:
+        currency_to = DEFAULTS['currency_to']
+    rate, currencies = get_rates(currency_from, currency_to)
+    return render_template('home.html', articles=articles, weather=weather,
+                           currency_from=currency_from, currency_to=currency_to,
+                           rate=rate, currencies=sorted(currencies))
 
 def get_news(query):
     if not query or query.lower() not in RSS_FEEDS:
@@ -56,6 +69,13 @@ def get_weather(query):
             'image': parsed['current']['condition']['icon']
         }
     return weather
+
+def get_rates(frm, to):
+    all_currency = request.urlopen(CURRENCY_URL).read()
+    parsed = json.loads(all_currency).get('rates')
+    frm_rate = parsed.get(frm.upper())
+    to_rate = parsed.get(to.upper())
+    return (to_rate / frm_rate, parsed.keys())
 
 if __name__ == '__main__':
     app.run(port=8001, debug=True)
