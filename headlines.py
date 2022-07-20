@@ -63,7 +63,7 @@ def get_news(query):
 
 def get_weather(query):
     query = parse.quote(query)
-    api_url = f'http://api.weatherapi.com/v1/current.json?key=c60b3b20a7f14529866163025221307&q={query}&aqi=no'
+    api_url = f'http://api.weatherapi.com/v1/current.json?key=37d8006727664a199ec130039222007&q={query}&aqi=no'
     url = api_url.format(query)
     data = request.urlopen(url).read()
     parsed = json.loads(data)
