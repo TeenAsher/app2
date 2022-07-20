@@ -7,6 +7,10 @@
 <body>
   <h1>Headlines</h1>
   <h2>Current weather</h2>
+  <form>
+      <input type="text" name="city" placeholder="weather search">
+      <input type="submit" value="Submit">
+  </form>
   <p>City: <b>{{ weather.city }}, {{ weather.country }}</b></p>
   <p>{{ weather.description }} |{{ weather.temperature }}&#8451;</p>
   <p><img src="{{ weather.image }}"></p>
